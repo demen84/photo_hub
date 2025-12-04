@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    /* 1. Tùy chọn Môi trường (Environment Settings)
+      Cần thiết cho ES Modules trong Node.js (tương thích với "type": "module" trong package.json)
+    */
+    "target": "ES2022", 
+    "module": "NodeNext", // Đặt module thành NodeNext để xử lý ES Modules và tự động đặt moduleResolution: NodeNext
+    "moduleResolution": "NodeNext", // Đảm bảo cơ chế tìm module của Node.js hiện đại
+    
+    /* 2. Tùy chọn Độ nghiêm ngặt (Strictness and Type Checking)
+      Nên dùng để duy trì chất lượng code
+    */
+    "strict": true, 
+    "esModuleInterop": true, 
+    "skipLibCheck": true, // Bỏ qua kiểm tra kiểu dữ liệu cho các thư viện (bao gồm cả Prisma Client)
+    "forceConsistentCasingInFileNames": true,
+    
+    /* 3. Tùy chọn Dự án (Project Layout - Cần thiết nếu bạn dùng lệnh build)
+      Nếu bạn chỉ dùng ts-node, bạn có thể bỏ qua "outDir" và "rootDir".
+    */
+    "rootDir": "./src", // Giả định mã nguồn chính của bạn nằm trong thư mục src
+    "outDir": "./dist" // Thư mục output khi biên dịch
+    
+    // Bỏ qua các tùy chọn không cần thiết hoặc gây xung đột với ts-node/NodeNext:
+    // "verbatimModuleSyntax": true,
+    // "isolatedModules": true,
+    // "noUncheckedSideEffectImports": true,
+    // "moduleDetection": "force",
+  }
+}
