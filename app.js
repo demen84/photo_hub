@@ -23,7 +23,7 @@ app.use(
 // API test to check connect
 app.get("/check", (req, res) => {
    const data = req.body;
-   console.log(data);
+   // console.log({ data });
 
    res.json({
       title: "Bài tập Capstone - Buổi 5 - Photo-Hub",

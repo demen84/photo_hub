@@ -125,6 +125,7 @@ export const authService = {
    login: async (req) => {
       // Lấy dữ liệu từ front end (từ người dùng)
       const { email, mat_khau } = req.body;
+      const COMMON_LOGIN_ERROR = "Email hoặc mật khẩu không hợp lệ.";
 
       // Ràng buộc đầu vào: kiểm tra dữ liệu hợp lệ
       if (!email || !mat_khau) {
@@ -132,24 +133,30 @@ export const authService = {
             `Vui lòng cung cấp đầy đủ thông tin: email, mat_khau.`
          );
       }
+      const normalizedEmail = email.trim().toLowerCase();
+
+      if (!EMAIL_REGEX.test(normalizedEmail)) {
+         throw new BadRequestException(COMMON_LOGIN_ERROR);
+      }
 
       // Tìm user có trường email bằng với giá trị email lấy từ req.body
       const userExist = await prisma.nguoi_dung.findUnique({
-         where: { email: email },
+         where: { email: normalizedEmail },
+         select: {
+            nguoi_dung_id: true,
+            mat_khau: true,
+            ho_ten: true,
+            tuoi: true,
+            anh_dai_dien: true,
+            email: true,
+         },
       });
 
       // Kiểm tra user có tồn tại trong db không
       if (!userExist) {
-         throw new BadRequestException(
-            `Email: ${email} không tồn tại. Vui lòng đăng ký mới.`
-         );
+         throw new BadRequestException(COMMON_LOGIN_ERROR); // thông báo chung chung để hacker khó đoán là đang sai email hay mật khẩu
       }
 
-      if (!mat_khau || mat_khau.length === 0) {
-         throw new BadRequestException(
-            "Vui lòng đăng nhập bằng Google, để cập nhật mật khẩu trong setting"
-         );
-      }
       /**
        * Kiểm tra mật khẩu
        * !Lưu ý: Mật khẩu trong db là mật khẩu đã mã hóa, nên ta không thể so sánh trực tiếp được
@@ -157,10 +164,10 @@ export const authService = {
        * !Hàm này sẽ trả về true/false
        * !Nếu true thì đăng nhập thành công, nếu false thì đăng nhập thất bại
        */
-      const isPassword = bcrypt.compareSync(mat_khau, userExist.mat_khau);
+      const isPassword = await bcrypt.compare(mat_khau, userExist.mat_khau);
 
       if (!isPassword) {
-         throw new BadRequestException(`Mật khẩu không đúng.`);
+         throw new BadRequestException(COMMON_LOGIN_ERROR); // thông báo chung chung để hacker khó đoán là đang sai email hay mật khẩu
       }
 
       //Xử lý trả về token (tạo tokens):
@@ -169,11 +176,27 @@ export const authService = {
       // guiMail(emailTo, subject);
       // guiMail("quyit84@gmail.com", "Cảnh báo đăng nhập");
 
-      return tokens;
+      /**
+       * ! Lợi ích của việc return thêm thông tin user:
+       * 1. Vì FE cần hiển thị và giữ thông tin người dùng ngay sau login
+       * 2. Thuận tiện, an toàn, FE lấy thông tin nhanh
+       * 3. Đúng chuẩn RESTFul hiện đại
+       * 4. Giảm số lần request (gọi) API
+       */
+      return {
+         user: {
+            nguoi_dung_id: userExist.nguoi_dung_id,
+            ho_ten: userExist.ho_ten,
+            email: userExist.email,
+            tuoi: userExist.tuoi,
+            anh_dai_dien: userExist.anh_dai_dien,
+         },
+         tokens,
+      };
    },
 
    getInfo: async (req) => {
-      delete req.user.password;
+      // delete req.user.mat_khau; //Vì req.user ko có select mat_khau nên ko cần dòng delete req.user.mat_khau này.
       return req.user;
    },
 
@@ -231,7 +254,7 @@ export const authService = {
 
       return tokens;
    },
-
+   /*
    findAll: async (req) => {
       const userList = await prisma.users.findMany({
          select: {
@@ -451,5 +474,5 @@ export const authService = {
          // Ném lại các lỗi khác
          throw error;
       }
-   },
+   }, */
 };

@@ -20,7 +20,7 @@ authRouter.post("/login", authController.login);
  * Route này cần bảo vệ, chỉ cho phép user đã đăng nhập (có token hợp lệ) mới được phép gọi
  * Nên dùng middleware protect để bảo vệ route này
  */
-authRouter.get("/get-info", protect, authController.getInfo); // Bỏ checkPermision tại get-info
+authRouter.get("/get-info", protect, authController.getInfo); // Bỏ checkPermision tại get-info vì quy mô dự án ko có phân quyền
 
 // ! Login GOOGLE with OAUTH2.0
 // Khi người dùng click nút google login, thì FE sẽ gọi tới GET: api/auth/google
