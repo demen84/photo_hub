@@ -45,3 +45,20 @@ app.use("/api", rootRouter);
 app.use(appError);
 
 app.listen(PORT, () => console.log(`Server online at ${domain}`));
+
+/**
+ * Chuyển từ nhánh master sang nhánh main:
+ * git checkout master
+ * git branch -m main
+ * or: viết gọn trong 1 dòng (từ Git 2.23 trở lên):
+ * git switch master          # hoặc git checkout master
+ * git branch -m master main  # rõ ràng hơn, tránh nhầm
+ * Or gọn hơn nữa: git branch -m master main
+ * Tiếp theo:
+ * git init
+ * git add .
+ * git commit -m "up src"
+ * git remote add origin https://github.com/demen84/photo_hub.git
+ * git branch -M main    // đảm bảo nhánh local là main
+ * git push -u origin main --force //Lần sau update src thì chỉ cần git push
+ */
