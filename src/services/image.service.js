@@ -1,11 +1,17 @@
 import { buildQuery } from "../common/helpers/build-query.helper.js";
+import {
+   BadRequestException,
+   NotFoundException,
+   UnAuthorizedException,
+} from "../common/helpers/exception.helper.js";
 import prisma from "../common/prisma/connect.prisma.js";
 
-export const imageService = {
-   create: async (req) => {
-      return `This action create`;
-   },
+const DO_DAI_NOI_DUNG = 500;
 
+export const imageService = {
+   /**
+    * GET danh sách hình ảnh
+    */
    getImageList: async (req) => {
       const { page, pageSize, filters, skip } = buildQuery(req.query);
 
@@ -48,18 +54,24 @@ export const imageService = {
       };
    },
 
-   findOne: async (req) => {
-      const { id } = req.params; // Lấy id từ params
-      // console.log("ID RECEIVED:", id);
+   // GET hình ảnh theo id ảnh
+   // findOne: async (req) => {
+   //    const { id } = req.params; // Lấy id từ params
+   //    // console.log("ID RECEIVED:", id);
 
-      if (!id) throw new Error("Thiếu id trong tham số");
-      const image = await prisma.hinh_anh.findUnique({
-         where: { hinh_id: Number(id) },
-      });
-      return image;
-   },
+   //    if (!id) throw new Error("Thiếu id trong tham số");
+   //    const image = await prisma.hinh_anh.findUnique({
+   //       where: { hinh_id: Number(id) },
+   //    });
+   //    return image;
+   // },
 
-   // Tìm kiếm hình ảnh theo tên (có chứa từ khóa, không phân biệt hoa thường)
+   /**
+    * Tìm kiếm hình ảnh theo tên:
+    * có chứa từ khóa,
+    * không phân biệt hoa thường,
+    * có thể nhập từ khóa không dấu tiếng Việt
+    */
    timTheoTenHinh: async (req) => {
       const { name } = req.query;
 
@@ -93,11 +105,155 @@ export const imageService = {
       };
    },
 
-   update: async (req) => {
-      return `This action updates a id: ${req.params.id} image`;
+   /**
+    * GET thông tin hình ảnh & người tạo ảnh bằng id hình ảnh
+    */
+   getImageByHinh_id: async (req) => {
+      const { id } = req.params;
+
+      if (!id) throw new Error("Thiếu id trong tham số");
+
+      const image = await prisma.hinh_anh.findUnique({
+         where: { hinh_id: Number(id) },
+         include: {
+            nguoi_dung: {
+               select: {
+                  nguoi_dung_id: true,
+                  ho_ten: true,
+                  tuoi: true,
+               },
+            },
+         },
+      });
+
+      if (!image) throw new Error(`Không tìm thấy hình ảnh có id: ${id}`);
+
+      return image;
    },
 
-   remove: async (req) => {
-      return `This action removes a id: ${req.params.id} image`;
+   /**
+    * GET thông tin bình luận theo id ảnh
+    */
+   getCommentByHinh_Id: async (req) => {
+      const { hinh_id } = req.params;
+      if (!hinh_id) throw new Error("Thiếu id trong tham số");
+
+      const comments = await prisma.binh_luan.findMany({
+         where: { hinh_id: Number(hinh_id) },
+         include: {
+            nguoi_dung: {
+               select: {
+                  nguoi_dung_id: true,
+                  ho_ten: true,
+                  tuoi: true,
+               },
+            },
+         },
+         orderBy: { ngay_binh_luan: "asc" },
+      });
+
+      if (!comments || comments.length === 0)
+         throw new Error(`Không tìm thấy bình luận có id ảnh là: ${hinh_id}`);
+
+      return comments;
+   },
+
+   /**
+    * GET thông tin đã lưu hình này chưa theo id ảnh (dùng để kiểm tra ảnh đã lưu hay chưa ở nút Save)
+    */
+   checkSaveImage: async (req) => {
+      const { hinh_id } = req.params;
+      const user = req.user;
+
+      // 1. Thiếu tham số => Lỗi
+      if (!hinh_id) throw new BadRequestException("Chưa có tham số hinh_id");
+
+      // 2. Chưa login => Lỗi
+      if (!user || !user.nguoi_dung_id) {
+         throw new UnAuthorizedException("Vui lòng đăng nhập!");
+      }
+
+      // 3. Kiểm tra ảnh có tồn tại không?
+      const imageExists = await prisma.hinh_anh.findUnique({
+         where: { hinh_id: Number(hinh_id) },
+         select: { hinh_id: true },
+      });
+
+      if (!imageExists) {
+         throw new Error(`Không tìm thấy hình ảnh với ID: ${hinh_id}`);
+      }
+
+      // 4. Kiểm tra đã lưu ảnh hay chưa?
+      const checkSaved = await prisma.luu_anh.findUnique({
+         where: {
+            nguoi_dung_id_hinh_id: {
+               nguoi_dung_id: user.nguoi_dung_id,
+               hinh_id: Number(hinh_id),
+            },
+         },
+      });
+
+      return {
+         hinh_id: Number(hinh_id),
+         saved: !!checkSaved, // true: đã lưu; false: chưa lưu
+         // Or: da_luu: saved ? true : false
+         message: !!checkSaved ? "Đã lưu" : "Chưa lưu",
+         // Or: message: checkSaved ? "Đã lưu" : "Chưa lưu"
+      };
+   },
+
+   saveComment: async (req) => {
+      const { nguoi_dung_id, hinh_id, noi_dung } = req.body;
+      const user = req.user;
+      // console.log({ nguoi_dung_id, hinh_id, noi_dung });
+
+      // 1. Validate input (người dùng ko đc tự gửi nguoi_dung_id, vì học đã login & đã có token login)
+      if (!hinh_id || !noi_dung.trim()) {
+         throw new BadRequestException(
+            "Vui lòng nhập nội dung bình luận & hình cần bình luận"
+         );
+      }
+
+      if (noi_dung.trim().length > DO_DAI_NOI_DUNG) {
+         throw new BadRequestException(
+            `Nội dung bình luận không được quá ${DO_DAI_NOI_DUNG} kí tự`
+         );
+      }
+
+      // 2. Kiểm tra nguoi_dudng_id có tồn tại
+      if (!user || !user.nguoi_dung_id) {
+         throw new UnAuthorizedException("Vui lòng đăng nhập để bình luận");
+      }
+
+      // 3. Kiểm tra hình có tồn tại, phải có tồn tại thì mới comment đc
+      const hinh = await prisma.hinh_anh.findUnique({
+         where: { hinh_id: hinh_id },
+         select: { hinh_id: true }, // Chỉ cần biết có tồn tại.
+      });
+
+      if (!hinh) {
+         throw new NotFoundException(`Không tồn tại hình có id: ${hinh}`);
+      }
+
+      // 4. Xử lý lưu bình luận
+      const newComment = await prisma.binh_luan.create({
+         data: {
+            nguoi_dung_id,
+            hinh_id,
+            noi_dung,
+         },
+         include: {
+            nguoi_dung: {
+               select: {
+                  nguoi_dung_id: true,
+                  ho_ten: true,
+                  anh_dai_dien: true,
+               },
+            },
+         },
+      });
+
+      // 5. Trả về data cho Front End
+      return newComment;
    },
 };

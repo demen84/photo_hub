@@ -23,6 +23,13 @@ export class ForbiddenException extends Error {
    }
 } // Nếu là 403 thì sẽ cho refresh token
 
+export class NotFoundException extends Error {
+   constructor(message = "NotFound") {
+      super(message);
+      this.statusCodes = statusCodes.NOT_FOUND; // 404
+   }
+} // Nếu là 403 thì sẽ cho refresh token
+
 export class ManyRequestException extends Error {
    constructor(message = "ManyRequestException") {
       super(message);
