@@ -5,7 +5,8 @@ import protect from "../common/middleware/protect.middleware.js";
 const imageRouter = express.Router();
 
 // Tạo route CRUD
-// imageRouter.post("/", imageController.create);
+imageRouter.post("/upload", protect, imageController.create);
+imageRouter.delete("/:hinh_id", protect, imageController.delete);
 
 imageRouter.get("/", protect, imageController.getImageList);
 

@@ -61,4 +61,16 @@ export const imageController = {
       );
       res.status(response.statusCode).json(response);
    },
+
+   create: async (req, res, next) => {
+      const result = await imageService.create(req);
+      const response = responseSuccess(result, `Tạo ảnh thành công`);
+      res.status(response.statusCode).json(response);
+   },
+
+   delete: async (req, res, next) => {
+      const result = await imageService.delete(req);
+      const response = responseSuccess(result, `Xóa ảnh thành công`);
+      res.status(response.statusCode).json(response);
+   },
 };

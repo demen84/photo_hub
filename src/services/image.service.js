@@ -1,6 +1,7 @@
 import { buildQuery } from "../common/helpers/build-query.helper.js";
 import {
    BadRequestException,
+   ForbiddenException,
    NotFoundException,
    UnAuthorizedException,
 } from "../common/helpers/exception.helper.js";
@@ -204,6 +205,9 @@ export const imageService = {
       };
    },
 
+   /**
+    * POST để lưu thông tin bình luận của người dùng với hình ảnh
+    */
    saveComment: async (req) => {
       try {
          const { hinh_id, noi_dung } = req.body;
@@ -265,5 +269,44 @@ export const imageService = {
          }
          throw error;
       }
+   },
+
+   create: (req) => {
+      const { ten_hinh, duong_dan, mo_ta } = req.body;
+      // const user = req.user;
+
+      console.log({ ten_hinh, duong_dan, mo_ta });
+
+      return "Tạo ảnh thành công";
+   },
+
+   delete: async (req) => {
+      const { hinh_id } = req.params;
+      const user = req.user; // lấy từ middleware protect
+
+      const hinhId = validateId(hinh_id);
+
+      const hinh = await prisma.hinh_anh.findUnique({
+         where: { hinh_id: hinhId },
+      });
+
+      if (!hinh) throw new NotFoundException("Không tìm thấy hình");
+
+      // Chỉ có user login mới có quyền xóa hình của họ
+      if (hinh.nguoi_dung_id !== user.nguoi_dung_id) {
+         throw new ForbiddenException("Bạn không có quyền xóa hình này");
+      }
+
+      // Xóa hình
+      await prisma.hinh_anh.delete({ where: { hinh_id: hinhId } });
+
+      return {
+         message: "Xóa ảnh thành công",
+         hinh_id: hinhId,
+         deleted_by: {
+            nguoi_dung_id: user.nguoi_dung_id,
+            ho_ten: user.ho_ten,
+         },
+      };
    },
 };
