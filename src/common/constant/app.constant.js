@@ -24,21 +24,8 @@ console.log(
       REFRESH_TOKEN_SECRET: REFRESH_TOKEN_SECRET ? "Loaded" : "Missing!",
    },
    "\n"
-);
+); //Chỉ dành cho dev check (if any), lên Production thì disabled
 
-// console.log(
-//    "\n",
-//    {
-//       DATABASE_URL: DATABASE_URL,
-//       ACCESS_TOKEN_SECRET: ACCESS_TOKEN_SECRET,
-//       REFRESH_TOKEN_SECRET: REFRESH_TOKEN_SECRET,
-//       NODE_ENV,
-//       PORT,
-//       //   GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID,
-//       //   GOOGLE_CLIENT_SECRET: GOOGLE_CLIENT_SECRET,
-//    },
-//    "\n"
-// ); //Chỉ dành cho dev check (if any), lên Production thì disabled
 
 /**
  * Cách 2: export tất cả biến môi trường trong 1 object

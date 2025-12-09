@@ -4,7 +4,9 @@ import {
    NotFoundException,
    UnAuthorizedException,
 } from "../common/helpers/exception.helper.js";
+import { validateId } from "../common/helpers/validateId.helper.js";
 import prisma from "../common/prisma/connect.prisma.js";
+import { Prisma } from "@prisma/client";
 
 const DO_DAI_NOI_DUNG = 500;
 
@@ -176,7 +178,7 @@ export const imageService = {
       // 3. Kiểm tra ảnh có tồn tại không?
       const imageExists = await prisma.hinh_anh.findUnique({
          where: { hinh_id: Number(hinh_id) },
-         select: { hinh_id: true },
+         // select: { hinh_id: true },
       });
 
       if (!imageExists) {
@@ -203,56 +205,65 @@ export const imageService = {
    },
 
    saveComment: async (req) => {
-      const { hinh_id, noi_dung } = req.body;
-      const user = req.user;
-      console.log({ user });
+      try {
+         const { hinh_id, noi_dung } = req.body;
+         const user = req.user;
+         console.log({ user });
 
-      // 1. Validate input (người dùng ko đc tự gửi nguoi_dung_id, vì học đã login & đã có token login)
-      if (!hinh_id || !noi_dung.trim()) {
-         throw new BadRequestException(
-            "Vui lòng nhập nội dung bình luận & hình cần bình luận"
-         );
-      }
+         // 0. Ép kiểu + kiểm tra có phải số nguyên dương hợp lệ không
+         const hinhId = validateId(hinh_id);
 
-      if (noi_dung.trim().length > DO_DAI_NOI_DUNG) {
-         throw new BadRequestException(
-            `Nội dung bình luận không được quá ${DO_DAI_NOI_DUNG} kí tự`
-         );
-      }
+         // 1. Validate input (người dùng ko đc tự gửi nguoi_dung_id, vì học đã login & đã có token login)
+         if (!noi_dung.trim()) {
+            throw new BadRequestException("Vui lòng nhập nội dung bình luận.");
+         }
 
-      // 2. Kiểm tra nguoi_dudng_id có tồn tại
-      if (!user || !user.nguoi_dung_id) {
-         throw new UnAuthorizedException("Vui lòng đăng nhập để bình luận");
-      }
+         if (noi_dung.trim().length > DO_DAI_NOI_DUNG) {
+            throw new BadRequestException(
+               `Nội dung bình luận không được quá ${DO_DAI_NOI_DUNG} kí tự`
+            );
+         }
 
-      // 3. Kiểm tra hình có tồn tại, phải có tồn tại thì mới comment đc
-      const hinh = await prisma.hinh_anh.findUnique({
-         where: { hinh_id: Number(hinh_id) },
-         select: { hinh_id: true }, // Chỉ cần biết có tồn tại.
-      });
+         // 2. Kiểm tra nguoi_dudng_id có tồn tại
+         if (!user || !user.nguoi_dung_id) {
+            throw new UnAuthorizedException("Vui lòng đăng nhập để bình luận");
+         }
 
-      if (!hinh) {
-         throw new NotFoundException(`Không tồn tại hình có id: ${hinh}`);
-      }
+         // 3. Kiểm tra hình có tồn tại, phải có tồn tại thì mới comment đc
+         const hinh = await prisma.hinh_anh.findUnique({
+            where: { hinh_id: hinhId }, // Chỉ cần biết có tồn tại.
+         });
 
-      // 4. Xử lý lưu bình luận
-      const newComment = await prisma.binh_luan.create({
-         data: {
-            nguoi_dung_id: user.nguoi_dung_id,
-            hinh_id,
-            noi_dung,
-         },
-         include: {
-            nguoi_dung: {
-               select: {
-                  ho_ten: true,
-                  anh_dai_dien: true,
+         if (!hinh) {
+            throw new NotFoundException(`Không tồn tại hình có id: ${hinhId}`);
+         }
+
+         // 4. Xử lý lưu bình luận
+         const newComment = await prisma.binh_luan.create({
+            data: {
+               nguoi_dung_id: user.nguoi_dung_id,
+               hinh_id: hinhId,
+               noi_dung: noi_dung.trim(),
+            },
+            include: {
+               nguoi_dung: {
+                  select: {
+                     ho_ten: true,
+                     anh_dai_dien: true,
+                  },
                },
             },
-         },
-      });
+         });
 
-      // 5. Trả về data cho Front End
-      return newComment;
+         // 5. Trả về data cho Front End
+         return newComment;
+      } catch (error) {
+         if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            throw new BadRequestException(
+               `Lỗi dữ liệu đầu vào ${error.message}`
+            );
+         }
+         throw error;
+      }
    },
 };
