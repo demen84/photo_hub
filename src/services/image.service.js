@@ -203,9 +203,9 @@ export const imageService = {
    },
 
    saveComment: async (req) => {
-      const { nguoi_dung_id, hinh_id, noi_dung } = req.body;
+      const { hinh_id, noi_dung } = req.body;
       const user = req.user;
-      // console.log({ nguoi_dung_id, hinh_id, noi_dung });
+      console.log({ user });
 
       // 1. Validate input (người dùng ko đc tự gửi nguoi_dung_id, vì học đã login & đã có token login)
       if (!hinh_id || !noi_dung.trim()) {
@@ -227,7 +227,7 @@ export const imageService = {
 
       // 3. Kiểm tra hình có tồn tại, phải có tồn tại thì mới comment đc
       const hinh = await prisma.hinh_anh.findUnique({
-         where: { hinh_id: hinh_id },
+         where: { hinh_id: Number(hinh_id) },
          select: { hinh_id: true }, // Chỉ cần biết có tồn tại.
       });
 
@@ -238,14 +238,13 @@ export const imageService = {
       // 4. Xử lý lưu bình luận
       const newComment = await prisma.binh_luan.create({
          data: {
-            nguoi_dung_id,
+            nguoi_dung_id: user.nguoi_dung_id,
             hinh_id,
             noi_dung,
          },
          include: {
             nguoi_dung: {
                select: {
-                  nguoi_dung_id: true,
                   ho_ten: true,
                   anh_dai_dien: true,
                },

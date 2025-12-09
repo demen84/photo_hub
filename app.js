@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import rootRouter from "./src/routers/root.router.js";
 import { appError } from "./src/common/app-error/app.error.js";
+import { NODE_ENV, PORT } from "./src/common/constant/app.constant.js";
 
 const app = express();
 
@@ -32,7 +33,7 @@ app.get("/check", (req, res) => {
    });
 });
 
-const PORT = 3434;
+// const PORT = 3434;
 const domain = `http://localhost:${PORT}`;
 
 // Step 3:
@@ -42,11 +43,17 @@ app.use("/api", rootRouter);
  * Middleware xử lý lỗi toàn cục
  * Middleware này phải nằm sau Step 3: app.use("/api", rootRouter);
  */
-app.use(appError);
+app.use(appError); // Đặt dòng này sau rooteRouter => để bắt hết lỗi
 
-app.listen(PORT, () => console.log(`Server online at ${domain}`));
+// app.listen(PORT, () => console.log(`Server online at ${domain}`));
+app.listen(PORT, () => {
+   console.log(`Server is running at: http://localhost:${PORT}`);
+   console.log(`Environment: ${process.env.NODE_ENV || NODE_ENV}`);
+   console.log(`API docs: http://localhost:${PORT}/api`);
+});
 
 /**
+ * ! NOTE FOR GIT HUB command:
  * Chuyển từ nhánh master sang nhánh main:
  * git checkout master
  * git branch -m main

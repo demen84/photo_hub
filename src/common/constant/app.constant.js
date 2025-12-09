@@ -9,20 +9,36 @@ import "dotenv/config";
 export const DATABASE_URL = process.env.DATABASE_URL;
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
+export const NODE_ENV = process.env.NODE_ENV || "development";
+export const PORT = Number(process.env.PORT) || 3434;
 // export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 // export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 console.log(
-   "\n",
+   "\n=== ENVIRONMENT VARIABLES ===",
    {
-      DATABASE_URL: DATABASE_URL,
-      ACCESS_TOKEN_SECRET: ACCESS_TOKEN_SECRET,
-      REFRESH_TOKEN_SECRET: REFRESH_TOKEN_SECRET,
-      //   GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID,
-      //   GOOGLE_CLIENT_SECRET: GOOGLE_CLIENT_SECRET,
+      NODE_ENV,
+      PORT,
+      // DATABASE_URL, // ← không nên log cái này (có password)
+      ACCESS_TOKEN_SECRET: ACCESS_TOKEN_SECRET ? "Loaded" : "Missing!",
+      REFRESH_TOKEN_SECRET: REFRESH_TOKEN_SECRET ? "Loaded" : "Missing!",
    },
    "\n"
-); //Chỉ dành cho dev check (if any), lên Production thì disabled
+);
+
+// console.log(
+//    "\n",
+//    {
+//       DATABASE_URL: DATABASE_URL,
+//       ACCESS_TOKEN_SECRET: ACCESS_TOKEN_SECRET,
+//       REFRESH_TOKEN_SECRET: REFRESH_TOKEN_SECRET,
+//       NODE_ENV,
+//       PORT,
+//       //   GOOGLE_CLIENT_ID: GOOGLE_CLIENT_ID,
+//       //   GOOGLE_CLIENT_SECRET: GOOGLE_CLIENT_SECRET,
+//    },
+//    "\n"
+// ); //Chỉ dành cho dev check (if any), lên Production thì disabled
 
 /**
  * Cách 2: export tất cả biến môi trường trong 1 object
