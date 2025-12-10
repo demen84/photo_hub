@@ -13,7 +13,7 @@ imageRouter.get("/", protect, imageController.getImageList);
 imageRouter.get("/search", imageController.timTheoTenHinh); // ! để cái này sau findOne là sẽ bị lỗi 500 do bị conflict với fidnOne
 
 imageRouter.get(
-   "/get-image-and-nguoi-tao/:id",
+   "/get-image-and-nguoi-tao/:hinh_id",
    protect,
    imageController.getImageByHinh_id
 );
@@ -26,6 +26,21 @@ imageRouter.get(
    imageController.checkSaveImage
 );
 
+// Lấy danh sách ảnh đã tạo theo userId (nguoi_dung_id)
+imageRouter.get(
+   "/get-created/:nguoi_dung_id",
+   protect,
+   imageController.getCreateImageByUserId
+);
+
+// Lấy danh sách ảnh đã lưu theo userId (nguoi_dung_id)
+imageRouter.get(
+   "/get-saved/:nguoi_dung_id",
+   protect,
+   imageController.getSavedImageByUserId
+);
+
+// Lưu thông tin bình luận của người dùng
 imageRouter.post("/save-comment", protect, imageController.saveComment);
 
 export default imageRouter;

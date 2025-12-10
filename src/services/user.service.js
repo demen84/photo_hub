@@ -121,33 +121,41 @@ export const userService = {
       return `This action create`;
    },
 
+   // Lấy thông tin user
    findAll: async (req) => {
       const { page, pageSize, filters, skip } = buildQuery(req.query);
 
-      const articlesPromise = prisma.users.findMany({
+      const usersPromise = prisma.nguoi_dung.findMany({
          where: filters,
          skip: skip, // skip qua index bao nhiêu phần tử
          take: pageSize, // số phần tử cần lấy
+         orderBy: { nguoi_dung_id: "desc" },
+         select: {
+            nguoi_dung_id: true,
+            email: true,
+            ho_ten: true,
+            tuoi: true,
+            anh_dai_dien: true,
+            // vai_tro: true,
+         },
       });
 
-      const totalItemPromise = prisma.users.count({
+      const totalItemPromise = prisma.nguoi_dung.count({
          where: filters,
       });
 
       // Truy vấn xuống db nên phải dùng await
-      const [articles, totalItem] = await Promise.all([
-         articlesPromise,
+      const [users, totalItem] = await Promise.all([
+         usersPromise,
          totalItemPromise,
-      ]); // vì article & totalItem chạy độc lập, nên ta cho nó chạy song song, bằng cách bỏ vào Promise.all() này. Ở trên ta bỏ await
+      ]); // vì users & totalItem chạy độc lập, nên ta cho nó chạy song song, bằng cách bỏ vào Promise.all() này. Ở trên ta bỏ await
 
       const totalPage = Math.ceil(totalItem / pageSize);
 
       return {
-         page: page,
-         pageSize: pageSize,
-         totalItem: totalItem, // SL bài viết
-         totalPage: totalPage, // SL trang
-         items: articles || [],
+         message: "Lấy danh sách người dùng thành công",
+         pagination: { page, pageSize, totalItem, totalPage },
+         items: users || [],
       };
    },
 

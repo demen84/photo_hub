@@ -1,0 +1,351 @@
+{
+	"info": {
+		"_postman_id": "327077e4-04fb-4c10-a793-1e43b057ea6f",
+		"name": "PHOTO-HUB",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42971797",
+		"_collection_link": "https://www.postman.com/demen84/workspace/quy-node-52/collection/42971797-327077e4-04fb-4c10-a793-1e43b057ea6f?action=share&source=collection_link&creator=42971797"
+	},
+	"item": [
+		{
+			"name": "Check API",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"hoang@yahoo.com\",\r\n    \"fullName\": \"Hoang@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3434/check",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3434",
+					"path": [
+						"check"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Đăng Ký Người Dùng",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"hoang@gmail.com\",\r\n    \"mat_khau\": \"Apple@123\",\r\n    \"ho_ten\": \"Huy Hoàng\",\r\n    \"tuoi\": 16\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domainphoto}}auth/register",
+					"host": [
+						"{{domainphoto}}auth"
+					],
+					"path": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Đăng Nhập",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"thuong@yahoo.com\",\r\n    \"mat_khau\": \"Thuong@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domainphoto}}auth/login",
+					"host": [
+						"{{domainphoto}}auth"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Info",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{vault:authorization-secret}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}auth/get-info",
+					"host": [
+						"{{domainphoto}}auth"
+					],
+					"path": [
+						"get-info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy Danh Sách Hình",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUyNDM1NjIsImV4cCI6MTc2NTMyOTk2Mn0.dIeyX40H2Px64EvCpNBG8C85zltA2u1Dee1gDJLlKRo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image?page=1&pageSize=3",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy Hình Ảnh & Người Tạo Bằng ID Hình",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzLCJpYXQiOjE3NjUxNjEyNjYsImV4cCI6MTc2NTI0NzY2Nn0.aUJlIPDsl2s1I0hZ6yc0HiZxSivE-noj1XrT7rPW4Ck",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image/get-image-and-nguoi-tao/5",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"get-image-and-nguoi-tao",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Tìm Hình Theo Tên",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image/search?name=sai gon",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "sai gon"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy Bình Luận Theo ID Hình",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image/get-comment/3",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"get-comment",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Kiểm Tra Lưu Ảnh",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI0LCJpYXQiOjE3NjUxODQ0ODQsImV4cCI6MTc2NTI3MDg4NH0.xHyF6WxjmDfqpqe7Zy75ByEFK2YLBwpgkTXBx7A321w",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image/check-save-image/2",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"check-save-image",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Save Comment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUyNDM1NjIsImV4cCI6MTc2NTMyOTk2Mn0.dIeyX40H2Px64EvCpNBG8C85zltA2u1Dee1gDJLlKRo",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"hinh_id\": 13,\r\n    \"noi_dung\": \"Bình luận mới nè\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domainphoto}}image/save-comment",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"save-comment"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lưu Ảnh Người Dùng",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ten_hinh\": \"Động Phong Nha\",\r\n    \"duong_dan\": \"pathphongnha.jpg\",\r\n    \"mo_ta\": \"Hang động đẹp & lớn nhất Đông Nam Á\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domainphoto}}image/upload",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"upload"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Xóa Ảnh Theo ID Ảnh",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image/2",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

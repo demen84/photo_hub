@@ -44,6 +44,24 @@ export const imageController = {
       res.status(response.statusCode).json(response);
    },
 
+   getCreateImageByUserId: async (req, res, next) => {
+      const result = await imageService.getCreateImageByUserId(req);
+      const response = responseSuccess(
+         result,
+         `Lấy danh sách ảnh đã tạo theo userId`
+      );
+      res.status(response.statusCode).json(response);
+   },
+
+   getSavedImageByUserId: async (req, res, next) => {
+      const result = await imageService.getSavedImageByUserId(req);
+      const response = responseSuccess(
+         result,
+         `Lấy danh sách ảnh đã lưu theo userId`
+      );
+      res.status(response.statusCode).json(response);
+   },
+
    checkSaveImage: async (req, res, next) => {
       const result = await imageService.checkSaveImage(req);
       const response = responseSuccess(

@@ -20,6 +20,7 @@ export const userController = {
       res.status(response.statusCode).json(response);
    },
 
+   // Lấy thông tin user
    findAll: async function (req, res, next) {
       const result = await userService.findAll(req);
       const response = responseSuccess(result, `Find All user`);
