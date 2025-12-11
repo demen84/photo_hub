@@ -129,6 +129,25 @@ export const authService = {
       return nguoi_dung_moi;
    },
 
+   registerAdmin: async (req) => {
+      // req.user đã là admin (do adminProtect)
+      const { email, mat_khau, ho_ten, tuoi } = req.body;
+
+      // Validate...
+
+      const newUserAdmin = await prisma.nguoi_dung.create({
+         data: {
+            email,
+            mat_khau: hashedPassword,
+            ho_ten,
+            tuoi,
+            vai_tro_id: 1, // ÉP CHẶT LÀ ADMIN
+         },
+      });
+
+      return { message: "Tạo user admin thành công", data: newUserAdmin };
+   },
+
    login: async (req) => {
       // Lấy dữ liệu từ front end (từ người dùng)
       const { email, mat_khau } = req.body;

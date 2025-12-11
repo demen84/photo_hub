@@ -436,6 +436,42 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Sửa Thông Tin Người Dùng",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI0LCJpYXQiOjE3NjU0MjkzMjQsImV4cCI6MTc2NTUxNTcyNH0.YqN2zcM38CbE5lpSaWrKyM3qhyUe1UiLMD_E-DHTKH0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ho_ten\": \"Trần Huy Hoàng\",\r\n    \"tuoi\": 10,\r\n    \"anh_dai_dien\": \"test.jpg\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domainphoto}}user/24",
+					"host": [
+						"{{domainphoto}}user"
+					],
+					"path": [
+						"24"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

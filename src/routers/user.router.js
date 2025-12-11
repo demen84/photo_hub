@@ -24,7 +24,9 @@ userRouter.post(
 userRouter.post("/", userController.create);
 userRouter.get("/", protect, adminProtect, userController.findAll);
 userRouter.get("/:id", userController.findOne);
-// userRouter.patch("/:id", userController.update);
+
+// Sửa thông tin người dùng
+userRouter.patch("/:id", protect, userController.update);
 // userRouter.delete("/:id", userController.remove);
 
 export default userRouter;

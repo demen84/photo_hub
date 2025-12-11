@@ -32,4 +32,11 @@ export const userController = {
       const response = responseSuccess(result, `Find One user`);
       res.status(response.statusCode).json(response);
    },
+
+   // Sửa thông tin người dùng
+   update: async function (req, res, next) {
+      const result = await userService.update(req);
+      const response = responseSuccess(result, `Update User`);
+      res.status(response.statusCode).json(response);
+   },
 };

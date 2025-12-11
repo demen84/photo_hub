@@ -3,6 +3,7 @@ import { authController } from "../controllers/auth.controller.js";
 import protect from "../common/middleware/protect.middleware.js";
 import passport from "passport";
 import { registerRateLimiter } from "../common/middleware/rate-limit.middleware.js";
+import { adminProtect } from "../common/middleware/adminProtect.middleware.js";
 // import { checkPermision } from "../common/middleware/check-permision.middleware.js";
 
 const authRouter = express.Router();
@@ -13,6 +14,15 @@ authRouter.post(
    registerRateLimiter, // Đây là middleware: kiểm tra & chặn request nếu vượt quá 5 lần (5 request) trong vòng 10 phút
    authController.register
 );
+
+// Tạo api riêng cho role admin
+authRouter.post(
+   "/register-admin",
+   protect,
+   adminProtect,
+   authController.registerAdmin
+);
+
 authRouter.post("/login", authController.login);
 
 /**

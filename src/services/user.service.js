@@ -1,9 +1,13 @@
-import { BadRequestException } from "../common/helpers/exception.helper.js";
+import {
+   BadRequestException,
+   UnAuthorizedException,
+} from "../common/helpers/exception.helper.js";
 import prisma from "../common/prisma/connect.prisma.js";
 import path from "path";
 import fs from "fs";
 import cloudinary from "../common/cloudinary/init.cloudinary.js";
 import { buildQuery } from "../common/helpers/build-query.helper.js";
+import { validateId } from "../common/helpers/validateId.helper.js";
 
 export const userService = {
    avatarLocal1: async function (req) {
@@ -177,5 +181,55 @@ export const userService = {
          },
       });
       return user;
+   },
+
+   /**
+    * Sửa thông tin người dùng
+    */
+   update: async (req) => {
+      // Lấy id (nguoi_dung_id) từ params ở postman
+      const { id } = req.params;
+      // Lấy thông tin từ body
+      const { ho_ten, tuoi, anh_dai_dien } = req.body;
+      // Lấy user từ protect middleware
+      const user = req.user;
+
+      // Validate input
+      const userId = validateId(id);
+      const age = validateId(tuoi);
+
+      if (!ho_ten?.trim() || !anh_dai_dien?.trim()) {
+         throw new BadRequestException(
+            "Chưa nhập thông tin ho_ten & anh_dai_dien"
+         );
+      }
+
+      if (!user || user.nguoi_dung_id !== userId) {
+         throw new UnAuthorizedException(
+            "Bạn không có quyền sửa thông tin người dùng"
+         );
+      }
+
+      // Xử lý sửa thông tin người dùng
+      const updateUser = await prisma.nguoi_dung.update({
+         where: { nguoi_dung_id: userId },
+         data: {
+            ho_ten: ho_ten.trim(),
+            tuoi: age,
+            anh_dai_dien: anh_dai_dien.trim(),
+         },
+         select: {
+            nguoi_dung_id: true,
+            ho_ten: true,
+            email: true,
+            tuoi: true,
+            anh_dai_dien: true,
+         },
+      });
+
+      return {
+         message: "Sửa thông tin người dùng thành công.",
+         data: updateUser,
+      };
    },
 };
