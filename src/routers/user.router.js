@@ -3,6 +3,7 @@ import { userController } from "../controllers/user.controller.js";
 import protect from "../common/middleware/protect.middleware.js";
 import { uploadLocalDisk } from "../common/multer/local-disk.multer.js";
 import { uploadMemoryCloud } from "../common/multer/memory-cloud.multer.js";
+import { adminProtect } from "../common/middleware/adminProtect.middleware.js";
 
 const userRouter = express.Router();
 
@@ -21,7 +22,7 @@ userRouter.post(
 
 // Tạo route CRUD
 userRouter.post("/", userController.create);
-userRouter.get("/", userController.findAll);
+userRouter.get("/", protect, adminProtect, userController.findAll);
 userRouter.get("/:id", userController.findOne);
 // userRouter.patch("/:id", userController.update);
 // userRouter.delete("/:id", userController.remove);

@@ -123,6 +123,11 @@ export const userService = {
 
    // Lấy thông tin user
    findAll: async (req) => {
+      // Thêm table Roles để kiểm tra chỉ có user có vai_tro = 'admin' thì mới được lấy danh sách user, role khác thì không đc quyền lấy
+      // Tạo têm bảng Roles (vai_tro)
+
+      // user đã được kiểm tra bởi adminProtect middleware
+
       const { page, pageSize, filters, skip } = buildQuery(req.query);
 
       const usersPromise = prisma.nguoi_dung.findMany({
@@ -136,7 +141,10 @@ export const userService = {
             ho_ten: true,
             tuoi: true,
             anh_dai_dien: true,
-            // vai_tro: true,
+            vai_tro_id: true,
+            vai_tro: {
+               select: { ten_vai_tro: true, dien_giai: true },
+            },
          },
       });
 

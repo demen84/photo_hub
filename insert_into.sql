@@ -5,6 +5,15 @@ SET NAMES utf8mb4;
 
 START TRANSACTION;
 
+-- 0) Bảng: vai_tro:
+
+INSERT INTO vai_tro (ten_vai_tro, dien_giai, kich_hoat) VALUES
+('admin', 'Quản trị viên hệ thống', true),
+('user', 'Người dùng thông thường', true)
+ON DUPLICATE KEY UPDATE
+  dien_giai = VALUES(dien_giai),
+  kich_hoat = VALUES(kich_hoat);
+
 -- 1) Users (nguoi_dung)
 INSERT INTO nguoi_dung (email, mat_khau, ho_ten, tuoi, anh_dai_dien) VALUES
 ('quy.tran@example.com',      '$2b$10$quyTranHashXXXX',       'Trần Quốc Quý',       28, '/avatars/u1.jpg'),

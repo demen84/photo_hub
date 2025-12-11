@@ -51,7 +51,23 @@ model nguoi_dung {
   ho_ten        String      @db.VarChar(255)
   tuoi          Int?        @db.UnsignedTinyInt
   anh_dai_dien  String?     @db.VarChar(500)
+  vai_tro_id    Int         @default(2)
   binh_luan     binh_luan[]
   hinh_anh      hinh_anh[]
   luu_anh       luu_anh[]
+  vai_tro       vai_tro     @relation(fields: [vai_tro_id], references: [vai_tro_id], map: "fk_nguoi_dung_vai_tro")
+
+  @@index([vai_tro_id], map: "idx_vai_tro_id")
+}
+
+model vai_tro {
+  vai_tro_id    Int          @id @default(autoincrement())
+  ten_vai_tro   String       @unique(map: "ten_vai_tro") @db.VarChar(100)
+  dien_giai     String?      @db.VarChar(255)
+  kich_hoat     Boolean      @default(true)
+  ngay_tao      DateTime     @default(now()) @db.DateTime(0)
+  ngay_cap_nhat DateTime?    @default(now()) @db.DateTime(0)
+  nguoi_dung    nguoi_dung[]
+
+  @@index([ten_vai_tro], map: "idx_ten_vai_tro")
 }

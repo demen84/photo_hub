@@ -1,4 +1,3 @@
-// import { buildQuery } from "../common/helpers/build-query.helper.js";
 import prisma from "../common/prisma/connect.prisma.js";
 import bcrypt from "bcrypt";
 import tokenService from "./token.service.js";
@@ -19,6 +18,11 @@ const EMAIL_REGEX =
    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export const authService = {
+   /**
+    * Đăng ký người dùng mới
+    * Người dùng mới có vai trò mặc định là 2 (user) (ko phải ai cũng có quyền tạo user mới có vai trò là 'admin')
+    * Muốn đăng ký user mới có quyền admin thì phải tạo API đăng ký riêng.
+    */
    register: async (req) => {
       // Lấy dữ liệu từ front end (từ người dùng)
       const { email, mat_khau, ho_ten, tuoi } = req.body || {};
@@ -116,6 +120,9 @@ export const authService = {
             ho_ten: true,
             tuoi: true,
             anh_dai_dien: true,
+            vai_tro: {
+               select: { vai_tro_id: true, ten_vai_tro: true },
+            },
          },
       });
 
