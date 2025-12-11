@@ -71,7 +71,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"thuong@yahoo.com\",\r\n    \"mat_khau\": \"Thuong@123\"\r\n}",
+					"raw": "{\r\n    \"email\": \"hoang@gmail.com\",\r\n    \"mat_khau\": \"Apple@123\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -159,7 +159,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEzLCJpYXQiOjE3NjUxNjEyNjYsImV4cCI6MTc2NTI0NzY2Nn0.aUJlIPDsl2s1I0hZ6yc0HiZxSivE-noj1XrT7rPW4Ck",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
 							"type": "string"
 						}
 					]
@@ -301,7 +301,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"ten_hinh\": \"Động Phong Nha\",\r\n    \"duong_dan\": \"pathphongnha.jpg\",\r\n    \"mo_ta\": \"Hang động đẹp & lớn nhất Đông Nam Á\"\r\n}",
+					"raw": "{\r\n    \"ten_hinh\": \"Vịnh Cam Ranh\",\r\n    \"duong_dan\": \"/camranhbay.jpg\",\r\n    \"mo_ta\": \"Biển xanh mây trắng, cát vàng\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -336,12 +336,102 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{domainphoto}}image/2",
+					"raw": "{{domainphoto}}image/17",
 					"host": [
 						"{{domainphoto}}image"
 					],
 					"path": [
-						"2"
+						"17"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy DS Ảnh Đã Tạo Theo Người Dùng",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image/get-created/14",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"get-created",
+						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy DS Ảnh Đã Lưu Theo Người Dùng",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}image/get-saved/14",
+					"host": [
+						"{{domainphoto}}image"
+					],
+					"path": [
+						"get-saved",
+						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lấy Thông Tin User",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI0LCJpYXQiOjE3NjU0MjkzMjQsImV4cCI6MTc2NTUxNTcyNH0.YqN2zcM38CbE5lpSaWrKyM3qhyUe1UiLMD_E-DHTKH0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}user?page=1&pageSize=3",
+					"host": [
+						"{{domainphoto}}user"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "pageSize",
+							"value": "3"
+						}
 					]
 				}
 			},
