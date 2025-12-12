@@ -6,7 +6,8 @@ import { NODE_ENV, PORT } from "./src/common/constant/app.constant.js";
 
 const app = express();
 
-app.use(express.json()); // Parse JSON
+// Parse JSON
+app.use(express.json());
 
 // BẮT LỖI JSON KHÔNG HỢP LỆ (leading zero(số 0 đứng đầu), missing quote(thiếu dấu ngoặc kép ""), v.v.)
 app.use((err, req, res, next) => {

@@ -189,8 +189,11 @@ export const userService = {
    update: async (req) => {
       // Lấy id (nguoi_dung_id) từ params ở postman
       const { id } = req.params;
-      // Lấy thông tin từ body
-      const { ho_ten, tuoi, anh_dai_dien } = req.body;
+      // Lấy thông tin từ body: các thông tin được cập nhật
+      // const { ho_ten, tuoi, anh_dai_dien } = req.body;
+      const ho_ten = req.body?.ho_ten;
+      const tuoi = req.body?.tuoi;
+      const anh_dai_dien = req.body?.anh_dai_dien;
       // Lấy user từ protect middleware
       const user = req.user;
 
@@ -252,7 +255,7 @@ export const userService = {
          },
       });
 
-      // Trả về thông tin đã update cho FE
+      // Trả về thông tin đã updated cho FE
       return {
          message: "Cập nhật thông tin người dùng thành công.",
          data: updateUser,
