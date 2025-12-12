@@ -8,6 +8,18 @@ const app = express();
 
 app.use(express.json()); // Parse JSON
 
+// BẮT LỖI JSON KHÔNG HỢP LỆ (leading zero(số 0 đứng đầu), missing quote(thiếu dấu ngoặc kép ""), v.v.)
+app.use((err, req, res, next) => {
+   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+      return res.status(400).json({
+         status: "error",
+         statusCode: 400,
+         message: "JSON không hợp lệ. Vui lòng kiểm tra cú pháp (không dùng số có 0 đứng đầu như 020, 08, v.v.)",
+      });
+   }
+   next(err); // chuyển lỗi cho middleware tiếp theo nếu không phải lỗi JSON
+});
+
 // Config CORS:
 app.use(
    cors({

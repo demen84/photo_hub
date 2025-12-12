@@ -1,0 +1,15 @@
+clone src về:
+
+git clone https://github.com/demen84/photo_hub.git
+
+npm install
+
+tạo file .env (copy vào folder dự án)
+
+npx prisma generate
+
+// Lấy code update về:
+
+git pull or git pull origin main
+
+check: npm run dev

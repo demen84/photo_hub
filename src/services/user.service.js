@@ -196,28 +196,53 @@ export const userService = {
 
       // Validate input
       const userId = validateId(id);
-      const age = validateId(tuoi);
 
-      if (!ho_ten?.trim() || !anh_dai_dien?.trim()) {
-         throw new BadRequestException(
-            "Chưa nhập thông tin ho_ten & anh_dai_dien"
-         );
-      }
-
+      // Validate quyền của user:
       if (!user || user.nguoi_dung_id !== userId) {
          throw new UnAuthorizedException(
             "Bạn không có quyền sửa thông tin người dùng"
          );
       }
 
-      // Xử lý sửa thông tin người dùng
+      // Khai báo 1 object rỗng để hứng các thông tin mà user sẽ update
+      const updateData = {};
+
+      // Validate ho_ten
+      if (ho_ten !== undefined) {
+         const hoTen = ho_ten.trim();
+         if (hoTen === "") throw new BadRequestException("Họ tên không được để trống.");
+         // Add ho_ten vào object
+         updateData.ho_ten = hoTen;
+      }
+
+      // Validate tuoi
+      const minAge = 16, maxAge = 90;
+      if (tuoi !== undefined) {
+         const age = Number(tuoi);
+         if (!Number.isInteger(age) || age < minAge || age > maxAge) {
+            throw new BadRequestException(`Tuổi phải là số nguyên từ ${minAge} đến ${maxAge}`);
+         }
+         // Add tuoi vào object
+         updateData.tuoi = age;
+      }
+
+      // Validate anh_dai_dien
+      if (anh_dai_dien !== undefined) {
+         const anhDaiDien = anh_dai_dien.trim();
+         if (anhDaiDien === "") throw new BadRequestException("Link ảnh đại diện không được để trống");
+         // Add anh_dai_dien vào object
+         updateData.anh_dai_dien = anhDaiDien;
+      }
+
+      if (Object.keys(updateData).length === 0) {
+         throw new BadRequestException("Hãy cung cấp ít nhất một thông tin để cập nhật");
+      }
+
+
+      // Xử lý update thông tin người dùng
       const updateUser = await prisma.nguoi_dung.update({
          where: { nguoi_dung_id: userId },
-         data: {
-            ho_ten: ho_ten.trim(),
-            tuoi: age,
-            anh_dai_dien: anh_dai_dien.trim(),
-         },
+         data: updateData,
          select: {
             nguoi_dung_id: true,
             ho_ten: true,
@@ -227,8 +252,9 @@ export const userService = {
          },
       });
 
+      // Trả về thông tin đã update cho FE
       return {
-         message: "Sửa thông tin người dùng thành công.",
+         message: "Cập nhật thông tin người dùng thành công.",
          data: updateUser,
       };
    },

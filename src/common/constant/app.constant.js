@@ -9,13 +9,13 @@ import "dotenv/config";
 export const DATABASE_URL = process.env.DATABASE_URL;
 export const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET;
 export const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET;
-export const NODE_ENV = process.env.NODE_ENV || "development";
+export const NODE_ENV = process.env.NODE_ENV || "dev";
 export const PORT = Number(process.env.PORT) || 3434;
 // export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 // export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
 console.log(
-   "\n=== ENVIRONMENT VARIABLES ===",
+   "\n***** ENVIRONMENT VARIABLES *****",
    {
       NODE_ENV,
       PORT,

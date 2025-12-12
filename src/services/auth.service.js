@@ -81,8 +81,7 @@ export const authService = {
       }
 
       // Validate: tuổi là số nguyên trong khoảng cho phép
-      const minAge = 16,
-         maxAge = 90;
+      const minAge = 16, maxAge = 90;
       if (!Number.isInteger(age) || age < minAge || age > maxAge) {
          throw new BadRequestException(
             `Tuổi phải là số nguyên từ ${minAge} đến ${maxAge}.`
