@@ -253,8 +253,8 @@ export const authService = {
       }
 
       // Kiểm tra userId có thật sự tồn tại trong db không?
-      const userExist = await prisma.users.findUnique({
-         where: { id: decodeAccessToken.userId },
+      const userExist = await prisma.nguoi_dung.findUnique({
+         where: { nguoi_dung_id: decodeAccessToken.userId },
       });
       if (!userExist) {
          // Nếu không tồn tại userId trong db thì ném ra lỗi
@@ -262,12 +262,12 @@ export const authService = {
       }
 
       // Kiểm tra user có bị blacklist/banned hay không?
-      // ...
+      // ...???
 
       // Khi kiểm tra các cases xong thì Tạo Token dựa vào userId
       // Trường hợp 1: trả 2 cặp token
       // Chỉ khi khoảng thời gian hết hạn của refreshToken mà người dùng không đăng nhập => login lại
-      const tokens = tokenService.createToken(userExist.id);
+      const tokens = tokenService.createToken(userExist.nguoi_dung_id);
 
       // Case 2: chỉ trả accessToken mới
       console.log("DECODED:", {
@@ -279,225 +279,4 @@ export const authService = {
 
       return tokens;
    },
-   /*
-   findAll: async (req) => {
-      const userList = await prisma.users.findMany({
-         select: {
-            id: true,
-            email: true,
-            password: false,
-            fullName: true,
-            createdAt: true,
-         },
-      });
-      return userList;
-   },
-
-   findOne: async function (req) {
-      const id = req.params.id;
-      const user = await prisma.users.findUnique({
-         where: { id: parseInt(id) },
-         select: {
-            id: true,
-            email: true,
-            password: false,
-            fullName: true,
-            createdAt: true,
-         },
-      });
-
-      if (!user) {
-         throw new BadRequestException(`User id: ${id} không tồn tại.`);
-      }
-
-      return user;
-   },
-
-   update: async (req) => {
-      // Lấy id từ params
-      const id = req.params.id;
-      // Lấy dữ liệu từ body
-      const { email, password, fullName } = req.body;
-      // Xử lý mã hóa mật khẩu
-      const hashedPassword = bcrypt.hashSync(password, 5); //5 or 10 là độ phức tạp của thuật toán băm
-      // Kiểm tra user có tồn tại?
-      const userExist = await prisma.users.findUnique({
-         where: { id: Number(id) },
-      });
-      if (!userExist) {
-         throw new BadRequestException(`User id: ${id} không tồn tại.`);
-      }
-      // Cập nhật thông tin user vào db
-      const updatedUser = await prisma.users.update({
-         where: { email: email },
-         data: { password: hashedPassword, fullName: fullName },
-         select: { id: true, email: true, fullName: true, createdAt: true }, // Không trả về mật khẩu
-      });
-      return {
-         message: `Cập nhật user id: ${id} thành công`,
-         user: updatedUser,
-      };
-   },
-
-   update2: async (req) => {
-      // 1. Lấy và kiểm tra ID từ params
-      const id = req.params.id;
-
-      // BẢO MẬT & RÀNG BUỘC MỚI: Kiểm tra ID phải là chuỗi số nguyên dương hợp lệ (Ví dụ: chặn "5a" hoặc "-5")
-      if (typeof id !== "string" || id.length === 0 || /\D/.test(id)) {
-         throw new BadRequestException(
-            `User id: "${id}" không hợp lệ. ID phải là một chuỗi số nguyên dương.`
-         );
-      }
-
-      const parsedId = parseInt(id, 10);
-
-      // Kiểm tra sau khi parsed (dành cho các trường hợp edge case)
-      if (isNaN(parsedId) || parsedId <= 0) {
-         throw new BadRequestException(`User id: "${id}" không hợp lệ.`);
-      }
-
-      // Lấy dữ liệu từ body
-      const { email, password, fullName } = req.body;
-      // Giả sử req.user được gán bởi middleware xác thực
-      const authenticatedUserId = req.user.id;
-
-      // 2. RÀNG BUỘC AUTHORIZATION: Chỉ người dùng đó mới có thể cập nhật
-      if (authenticatedUserId !== parsedId) {
-         // Thay BadRequestException bằng UnAuthorizedException rõ ràng hơn
-         throw new UnAuthorizedException(
-            "Bạn không có quyền cập nhật thông tin người dùng khác."
-         );
-      }
-
-      const dataToUpdate = {};
-
-      // 3. Logic cập nhật Email (Cần kiểm tra trùng lặp email mới)
-      if (email) {
-         // Kiểm tra email mới có bị trùng với user khác không
-         const existingUserWithEmail = await prisma.users.findUnique({
-            where: { email: email },
-         });
-
-         // Nếu email tồn tại VÀ không phải là email của chính người dùng đang cập nhật
-         if (existingUserWithEmail && existingUserWithEmail.id !== parsedId) {
-            throw new BadRequestException(
-               `Email: ${email} đã được sử dụng bởi người dùng khác.`
-            );
-         }
-         dataToUpdate.email = email;
-      }
-
-      // 4. Logic cập nhật Mật khẩu (Chỉ hash và update khi mật khẩu được cung cấp)
-      if (password) {
-         // Sử dụng bcrypt.hash (async) và salt round 10 (mức khuyến nghị)
-         const hashedPassword = await bcrypt.hash(password, 10);
-         dataToUpdate.password = hashedPassword;
-      }
-
-      // 5. Cập nhật fullName
-      if (fullName) {
-         dataToUpdate.fullName = fullName;
-      }
-
-      // Kiểm tra xem có dữ liệu nào để cập nhật không
-      if (Object.keys(dataToUpdate).length === 0) {
-         throw new BadRequestException(
-            "Không có dữ liệu hợp lệ nào được cung cấp để cập nhật."
-         );
-      }
-
-      try {
-         // 6. Cập nhật thông tin user vào db bằng ID
-         const updatedUser = await prisma.users.update({
-            where: { id: parsedId },
-            data: dataToUpdate,
-            select: { id: true, email: true, fullName: true, createdAt: true }, // Không trả về mật khẩu
-         });
-         return {
-            message: `Cập nhật user id: ${parsedId} thành công`,
-            user: updatedUser,
-         };
-      } catch (error) {
-         // Bắt lỗi NotFoundException nếu id không tồn tại
-         if (error.code === "P2025") {
-            throw new NotFoundException(
-               `User id: ${parsedId} không tồn tại (Lỗi này hiếm xảy ra do đã check Auth trước).`
-            );
-         }
-         throw error;
-      }
-   },
-
-   delete: async function (req) {
-      // Lấy id từ params
-      const id = req.params.id;
-
-      // Kiểm tra id hợp lệ
-      if (isNaN(id)) {
-         throw new BadRequestException(`User id: ${id} không hợp lệ.`);
-      }
-      // Kiểm tra user có tồn tại?
-      const userExist = await prisma.users.findUnique({
-         where: { id: Number(id) }, // parseInt(id, 10): chuyển id từ string sang number, 10 là hệ thập phân
-      });
-      if (!userExist) {
-         throw new BadRequestException(`User id: ${id} không tồn tại.`);
-      }
-      // Xóa user khỏi db
-      const deletedUser = await prisma.users.delete({
-         where: { id: parseInt(id, 10) },
-      });
-      return `Xóa user ${id} thành công`;
-   },
-   delete2: async function (req) {
-      //Bảo mật phòng thủ: đảm bảo người dùng đã đăng nhập
-      if (!req.user || !req.user.id) {
-         throw new UnAuthorizedException(
-            "Bạn chưa đăng nhập. Vui lòng đăng nhập để tiếp tục."
-         );
-      }
-      const authenticatedUserId = req.user.id; // Lấy ID của người dùng đang đăng nhập
-
-      // 1. Lấy và kiểm tra ID từ params
-      const id = req.params.id;
-
-      // BẢO MẬT & RÀNG BUỘC MỚI: Kiểm tra ID phải là chuỗi số nguyên dương hợp lệ
-      if (typeof id !== "string" || id.length === 0 || /\D/.test(id)) {
-         throw new BadRequestException(
-            `User id: "${id}" không hợp lệ. ID phải là một chuỗi số nguyên dương.`
-         );
-      }
-
-      const parsedId = parseInt(id, 10);
-
-      if (isNaN(parsedId) || parsedId <= 0) {
-         throw new BadRequestException(`User id: ${id} không hợp lệ.`);
-      }
-
-      // 2. RÀNG BUỘC AUTHORIZATION: Chỉ người dùng đó mới có thể xóa
-      if (authenticatedUserId !== parsedId) {
-         throw new UnAuthorizedException(
-            "Bạn không có quyền xóa người dùng khác."
-         );
-      }
-
-      try {
-         // 3. Xóa user khỏi db (chỉ 1 truy vấn)
-         // Nếu không tìm thấy, Prisma sẽ tự ném lỗi P2025
-         const deletedUser = await prisma.users.delete({
-            where: { id: parsedId },
-         });
-
-         // Nếu xóa thành công
-         return `Xóa user ${parsedId} thành công`;
-      } catch (error) {
-         // Bắt lỗi P2025 (Record not found) của Prisma nếu user không tồn tại
-         if (error.code === "P2025") {
-            throw new NotFoundException(`User id: ${parsedId} không tồn tại.`);
-         }
-         // Ném lại các lỗi khác
-         throw error;
-      }
-   }, */
 };

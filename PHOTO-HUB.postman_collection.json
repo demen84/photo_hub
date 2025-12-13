@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "327077e4-04fb-4c10-a793-1e43b057ea6f",
+		"_postman_id": "0b04fe39-101c-4297-85e5-4f353773f7f9",
 		"name": "PHOTO-HUB",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "42971797",
-		"_collection_link": "https://www.postman.com/demen84/workspace/quy-node-52/collection/42971797-327077e4-04fb-4c10-a793-1e43b057ea6f?action=share&source=collection_link&creator=42971797"
+		"_exporter_id": "49161250",
+		"_collection_link": "https://quyit84-721603.postman.co/workspace/quyit84's-Workspace~130aaf4f-609a-4a56-88a1-ce3091ebb289/collection/49161250-0b04fe39-101c-4297-85e5-4f353773f7f9?action=share&source=collection_link&creator=49161250"
 	},
 	"item": [
 		{
@@ -66,6 +66,21 @@
 		},
 		{
 			"name": "Đăng Nhập",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"pm.globals.set(\"accessToken\", res.data.tokens.accessToken)\r",
+							"pm.globals.set(\"refreshToken\", res.data.tokens.refreshToken)"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -91,6 +106,50 @@
 			"response": []
 		},
 		{
+			"name": "Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const res = pm.response.json()\r",
+							"pm.globals.set(\"accessToken\", res.data.tokens.accessToken)\r",
+							"pm.globals.set(\"refreshToken\", res.data.tokens.refreshToken)"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"accessToken\": \"{{accessToken}}\",\r\n    \"refreshToken\": \"{{refreshToken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domainphoto}}auth/refresh-token",
+					"host": [
+						"{{domainphoto}}auth"
+					],
+					"path": [
+						"refresh-token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get Info",
 			"request": {
 				"auth": {
@@ -98,7 +157,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "{{vault:authorization-secret}}",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -125,7 +184,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUyNDM1NjIsImV4cCI6MTc2NTMyOTk2Mn0.dIeyX40H2Px64EvCpNBG8C85zltA2u1Dee1gDJLlKRo",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -159,7 +218,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -228,7 +287,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI0LCJpYXQiOjE3NjUxODQ0ODQsImV4cCI6MTc2NTI3MDg4NH0.xHyF6WxjmDfqpqe7Zy75ByEFK2YLBwpgkTXBx7A321w",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -256,7 +315,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUyNDM1NjIsImV4cCI6MTc2NTMyOTk2Mn0.dIeyX40H2Px64EvCpNBG8C85zltA2u1Dee1gDJLlKRo",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -292,7 +351,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -328,7 +387,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -355,7 +414,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -363,13 +422,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{domainphoto}}image/get-created/14",
+					"raw": "{{domainphoto}}image/get-created/15",
 					"host": [
 						"{{domainphoto}}image"
 					],
 					"path": [
 						"get-created",
-						"14"
+						"15"
 					]
 				}
 			},
@@ -383,7 +442,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjE0LCJpYXQiOjE3NjUzNDI1NjcsImV4cCI6MTc2NTQyODk2N30.x6ZufsGcGCkttbPNmdERP6Z3vOCX2RwUSnNoluJGMrw",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -391,13 +450,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{domainphoto}}image/get-saved/14",
+					"raw": "{{domainphoto}}image/get-saved/15",
 					"host": [
 						"{{domainphoto}}image"
 					],
 					"path": [
 						"get-saved",
-						"14"
+						"15"
 					]
 				}
 			},
@@ -411,7 +470,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI0LCJpYXQiOjE3NjU0MjkzMjQsImV4cCI6MTc2NTUxNTcyNH0.YqN2zcM38CbE5lpSaWrKyM3qhyUe1UiLMD_E-DHTKH0",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -445,7 +504,7 @@
 					"bearer": [
 						{
 							"key": "token",
-							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjI0LCJpYXQiOjE3NjU0MjkzMjQsImV4cCI6MTc2NTUxNTcyNH0.YqN2zcM38CbE5lpSaWrKyM3qhyUe1UiLMD_E-DHTKH0",
+							"value": "{{accessToken}}",
 							"type": "string"
 						}
 					]
@@ -454,7 +513,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"ho_ten\": \"Trần Huy Hoàng\",\r\n    \"tuoi\": 10,\r\n    \"anh_dai_dien\": \"test.jpg\"\r\n}",
+					"raw": "{\r\n    \"tuoi\": 16,\r\n    \"ho_ten\": \"Trần Huy Hoàng\",\r\n    \"anh_dai_dien\": \"/huyhoang/apple.jpg\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -462,12 +521,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{domainphoto}}user/24",
+					"raw": "{{domainphoto}}user/15",
 					"host": [
 						"{{domainphoto}}user"
 					],
 					"path": [
-						"24"
+						"15"
 					]
 				}
 			},
