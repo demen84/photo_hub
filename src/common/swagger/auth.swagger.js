@@ -2,10 +2,11 @@ export const authSwagger = {
    "/auth/register": {
       post: {
          tags: ["Authorized"],
-         summary: "Trả về trạng thái đăng ký (boolean).",
+         summary: "Đăng ký người dùng (trả về trạng thái boolean).",
+         description: "Đăng ký người dùng mới.",
 
          requestBody: {
-            description: "Mô tả tùy chọn trong *Markdown*",
+            description: "Thông tin đăng ký người dùng mới",
             required: true,
             content: {
                "application/json": {
@@ -14,26 +15,39 @@ export const authSwagger = {
                      properties: {
                         email: {
                            type: "string",
-                           example: "new-email@yahoo.com",
+                           description: "Email của người dùng",
+                           example: "email@yahoo.com",
                         },
-                        password: {
+                        mat_khau: {
                            type: "string",
-                           example: "new-password@123",
+                           description: "Mật khẩu người dùng",
+                           example: "Passw0rd@123",
                         },
-                        fullName: {
+                        ho_ten: {
                            type: "string",
-                           example: "Phan Văn Cậy",
+                           description: "Họ tên người dùng",
+                           example: "Phan Trường Xuân",
+                        },
+                        tuoi: {
+                           type: "string",
+                           description: "Tuổi người dùng",
+                           example: 21,
                         },
                      },
+                  },
+                  example: {
+                     email: "email@yahoo.com",
+                     mat_khau: "Xung@123",
+                     ho_ten: "Phan Trường Xuân",
+                     tuoi: 21,
                   },
                },
             },
          },
 
-         description: "Ghi chú gì đó tại đây.",
          responses: {
             200: {
-               description: "Mảng JSON chứa thông tin đăng nhập",
+               description: "Đăng ký người dùng mới thành công.",
             },
          },
       },
@@ -42,9 +56,10 @@ export const authSwagger = {
       post: {
          tags: ["Authorized"],
          summary: "Trả về trạng thái đăng nhập (boolean).",
+         description: "Người dùng đăng nhập.",
 
          requestBody: {
-            description: "Mô tả tùy chọn trong *Markdown*",
+            description: "Đăng nhập vào hệ thống",
             required: true,
             content: {
                "application/json": {
@@ -53,22 +68,27 @@ export const authSwagger = {
                      properties: {
                         email: {
                            type: "string",
-                           example: "quy@yahoo.com",
+                           description: "Email người dùng.",
+                           example: "hoang@gmail.com",
                         },
-                        password: {
+                        mat_khau: {
                            type: "string",
-                           example: "quy@123",
+                           description: "Mật khẩu người dùng.",
+                           example: "Apple@123",
                         },
                      },
+                  },
+                  example: {
+                     email: "hoang@gmail.com",
+                     mat_khau: "Apple@123",
                   },
                },
             },
          },
 
-         description: "Ghi chú gì đó tại đây.",
          responses: {
             200: {
-               description: "Mảng JSON chứa thông tin đăng nhập",
+               description: "Đăng nhập thành công",
             },
          },
       },
@@ -77,17 +97,18 @@ export const authSwagger = {
       get: {
          tags: ["Authorized"],
 
+         // Show lock symbol, Bảo mật bằng Bearer Token
          security: [
             {
                BearerAuth: [],
             },
          ],
 
-         summary: "Trả về thông tin user.",
-         description: "Ghi chú gì đó tại đây.",
+         summary: "Trả về thông tin người dùng.",
+         description: "Thông tin người dùng.",
          responses: {
             200: {
-               description: "Mảng JSON chứa thông tin đăng nhập",
+               description: "Lấy thông tin người dùng thành công",
             },
          },
       },

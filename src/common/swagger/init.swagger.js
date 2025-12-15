@@ -1,17 +1,19 @@
-import { articleSwagger } from "./article.swagger.js";
+// Link: https://swagger.io/docs/specification/v3_0/about/
+
+import { imageSwagger } from "./image.swagger.js";
 import { authSwagger } from "./auth.swagger.js";
 import { userSwagger } from "./user.swagger.js";
 
 export const swaggerDocument = {
    openapi: "3.0.4",
    info: {
-      title: "Ví dụ API đơn giãn",
-      description: "Chào mừng bạn đến với API swagger.",
+      title: "PhotoHub API",
+      description: "Chào mừng bạn đến với PhotoHub API swagger.",
       version: "Phiên bản: 0.1.9",
    },
    servers: [
       {
-         url: "http://localhost:3069/api",
+         url: "http://localhost:3434/api",
          description: "Dev",
       },
       {
@@ -32,7 +34,7 @@ export const swaggerDocument = {
 
    paths: {
       ...authSwagger,
-      ...articleSwagger,
       ...userSwagger,
+      ...imageSwagger,
    },
 };
