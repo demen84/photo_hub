@@ -29,16 +29,6 @@ export const imageSwagger = {
          responses: {
             200: {
                description: "Lấy thông tin danh sách hình ảnh thành công",
-               // content: {
-               //   "application/json": {
-               //     schema: {
-               //       type: "array",
-               //       items: {
-               //         type: "string",
-               //       },
-               //     },
-               //   },
-               // },
             },
          },
       },
@@ -72,6 +62,34 @@ export const imageSwagger = {
       },
    },
 
+   "/image/search": {
+      get: {
+         tags: ["Images"],
+
+         // Show Lock symbol, bảo mật bằng Bearer
+         security: [{ BearerAuth: [] }],
+
+         summary: "Trả về danh sách hình ảnh.",
+         description: "Trả về danh sách hình ảnh khi người dùng lọc theo tên hình ảnh.",
+         parameters: [
+            {
+               name: "name",
+               in: "query",
+               required: true,
+               description: "Nhập ký tự đại diện của tên hình ảnh",
+               schema: { type: "string" },
+            },
+            // {...} // trường thông tin thứ 2 (nếu có)
+         ],
+
+         responses: {
+            200: {
+               description: "Lấy hình ảnh theo tên thành công",
+            },
+         },
+      },
+   },
+
    "/image/get-comment/{hinh_id}": {
       get: {
          tags: ["Images"],
@@ -95,6 +113,58 @@ export const imageSwagger = {
          responses: {
             200: {
                description: "Lấy thông tin bình luận thành công",
+            },
+         },
+      },
+   },
+
+   "/image/upload": {
+      post: {
+         tags: ["Images"],
+
+         // Show Lock symbol, bảo mật bằng Bearer
+         security: [{ BearerAuth: [] }],
+
+         summary: "Trả về thông tin hình ảnh.",
+         description: "Trả về thông tin hình ảnh đã lưu.",
+
+         requestBody: {
+            description: "Lưu hình ảnh người dùng",
+            required: true,
+            content: {
+               "application/json": {
+                  schema: {
+                     type: "object",
+                     properties: {
+                        ten_hinh: {
+                           type: "string",
+                           description: "Tên hình ảnh.",
+                           example: "Bãi dài Phú Quốc",
+                        },
+                        duong_dan: {
+                           type: "string",
+                           description: "Đường dẫn/link lưu hình ảnh.",
+                           example: "/hinhanh/baidaipq.jpg",
+                        },
+                        mo_ta: {
+                           type: "string",
+                           description: "Mô tả hình ảnh",
+                           example: "Cát trắng mịn, biển xanh mát",
+                        }
+                     },
+                  },
+                  example: {
+                     ten_hinh: "Bãi dài Phú Quốc",
+                     duong_dan: "/hinhanh/baidaipq.jpg",
+                     mo_ta: "Cát trắng mịn, biển xanh mát"
+                  },
+               },
+            },
+         },
+
+         responses: {
+            200: {
+               description: "Lưu hình ảnh người dùng",
             },
          },
       },

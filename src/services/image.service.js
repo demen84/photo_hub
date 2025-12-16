@@ -81,11 +81,11 @@ export const imageService = {
    timTheoTenHinh: async (req) => {
       const { name } = req.query;
 
-      const keyword = name.trim().toLowerCase();
-
-      if (!keyword) {
-         throw new Error("Vui lòng nhập từ khóa tìm kiếm");
+      if (!name || typeof name !== "string" || !name.trim()) {
+         throw new BadRequestException("Vui lòng nhập từ khóa tìm kiếm");
       }
+
+      const keyword = name.trim().toLowerCase();
 
       const images = await prisma.hinh_anh.findMany({
          where: {
