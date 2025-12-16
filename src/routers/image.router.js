@@ -21,7 +21,7 @@ imageRouter.get(
 imageRouter.get("/get-comment/:hinh_id", imageController.getCommentByHinh_Id);
 
 imageRouter.get(
-   "/check-save-image/:hinh_id",
+   "/check-saved-image/:hinh_id",
    protect,
    imageController.checkSaveImage
 );

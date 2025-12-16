@@ -98,11 +98,7 @@ export const authSwagger = {
          tags: ["Authorized"],
 
          // Show lock symbol, Bảo mật bằng Bearer Token
-         security: [
-            {
-               BearerAuth: [],
-            },
-         ],
+         security: [{ BearerAuth: [] }],
 
          summary: "Trả về thông tin người dùng.",
          description: "Thông tin người dùng.",
