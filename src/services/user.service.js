@@ -87,6 +87,10 @@ export const userService = {
    },
 
    avatarCloud: async function (req) {
+      /**
+       * Link: https://cloudinary.com/documentation/node_image_and_video_upload
+       * Lấy code tại Using await ở mục "The upload_stream method"
+       */
       const byteArrayBuffer = req.file.buffer;
       const uploadResult = await new Promise((resolve, reject) => {
          cloudinary.uploader
@@ -106,7 +110,7 @@ export const userService = {
 
       //Đảm bảo 1 user chỉ có 1 avatar => xóa hình cũ
       if (req.user.anh_dai_dien) {
-         // Xử lý xóa luôn Local để đảm bảo 1 user chỉ có 1 hình avatar
+         // Xóa luôn Local để đảm bảo 1 user chỉ có 1 hình avatar
          const oldPath = path.join("public/images/", req.user.anh_dai_dien);
          if (fs.existsSync(oldPath)) {
             fs.unlinkSync(oldPath);

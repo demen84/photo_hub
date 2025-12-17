@@ -50,6 +50,7 @@ app.get("/check", (req, res) => {
 // const PORT = 3434;
 const domain = `http://localhost:${PORT}`;
 
+// Lưu ảnh vào folder public/images
 app.use(express.static("public"));
 
 // Step 3:
