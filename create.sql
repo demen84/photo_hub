@@ -11,15 +11,15 @@ USE photohub_db;
 -- =========================
 -- Bảng: vai_tro (Roles)
 -- =========================
-CREATE TABLE vai_tro (
-	vai_tro_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Khóa chính vai trò',
-	ten_vai_tro VARCHAR(100) NOT NULL UNIQUE,
-	dien_giai VARCHAR(255),
-	kich_hoat BOOLEAN NOT NULL DEFAULT TRUE comment 'true: kích hoạt; false: không kích hoạt',
-	ngay_tao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	ngay_cap_nhat DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- TỰ ĐỘNG CẬP NHẬT KHI SỬA
-	INDEX idx_ten_vai_tro (ten_vai_tro) -- Đặt Index để tìm nhanh theo tên. Bảng này có quá ít record nên cũng không cần thiết đặt index.
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CREATE TABLE vai_tro (
+    vai_tro_id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT 'Khóa chính vai trò',
+    ten_vai_tro VARCHAR(100) NOT NULL UNIQUE,
+    dien_giai VARCHAR(255),
+    kich_hoat BOOLEAN NOT NULL DEFAULT TRUE comment 'true: kích hoạt; false: không kích hoạt',
+    ngay_tao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ngay_cap_nhat DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- TỰ ĐỘNG CẬP NHẬT KHI SỬA
+    INDEX idx_ten_vai_tro (ten_vai_tro) -- Đặt Index để tìm nhanh theo tên. Bảng này có quá ít record nên cũng không cần thiết đặt index.
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =========================
 -- BẢNG: nguoi_dung (Users)
@@ -90,3 +90,16 @@ CREATE TABLE luu_anh (
     ON UPDATE CASCADE,
   INDEX idx_luu_hinh (hinh_id)
 ) ENGINE=InnoDB;
+
+
+ALTER TABLE nguoi_dung
+ADD COLUMN vai_tro_id INT UNSIGNED COMMENT 'Khóa ngoại tham chiếu đến bảng vai_tro';
+
+
+ALTER TABLE nguoi_dung
+ADD CONSTRAINT fk_nguoi_dung_vai_tro
+FOREIGN KEY (vai_tro_id)
+REFERENCES vai_tro(vai_tro_id) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+UPDATE nguoi_dung set vai_tro_id = 2;
+UPDATE nguoi_dung set vai_tro_id = 1 where nguoi_dung_id = 13;

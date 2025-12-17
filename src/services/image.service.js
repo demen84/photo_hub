@@ -305,7 +305,7 @@ export const imageService = {
             );
          }
 
-         // // Kiểm tra URL hợp lệ (tùy chọn)
+         // Kiểm tra URL hợp lệ (tùy chọn)
          // try {
          //    new URL(duong_dan);
          // } catch {

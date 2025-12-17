@@ -10,7 +10,7 @@ import { buildQuery } from "../common/helpers/build-query.helper.js";
 import { validateId } from "../common/helpers/validateId.helper.js";
 
 export const userService = {
-   avatarLocal1: async function (req) {
+   avatarLocal9999: async function (req) {
       // console.log(req.file);
       if (!req.file) {
          throw new BadRequestException(`Chưa có hình avatar`);
@@ -39,17 +39,17 @@ export const userService = {
 
    avatarLocal: async (req) => {
       if (!req.file) {
-         throw new BadRequestException(`Chưa có hình avatar`);
+         throw new BadRequestException(`Chưa có ảnh đại diện`);
       }
 
       const newFilename = req.file.filename;
-      const oldFilename = req.user.avatar; // Lấy tên file cũ trước khi update
+      const oldFilename = req.user.anh_dai_dien; // Lấy tên file cũ trước khi update
 
       try {
          // 1. CẬP NHẬT DB VỚI TÊN FILE MỚI
-         await prisma.users.update({
-            where: { id: req.user.id },
-            data: { avatar: newFilename },
+         await prisma.nguoi_dung.update({
+            where: { nguoi_dung_id: req.user.nguoi_dung_id },
+            data: { anh_dai_dien: newFilename },
          });
 
          // 2. NẾU CẬP NHẬT DB THÀNH CÔNG, TIẾN HÀNH XÓA FILE CŨ
@@ -66,7 +66,7 @@ export const userService = {
             }
          }
 
-         return "Lưu hình avatar lên local disk public/images thành công!";
+         return "Lưu ảnh đại diện lên local disk public/images thành công!";
       } catch (dbError) {
          // 3. NẾU CẬP NHẬT DB THẤT BẠI: PHẢI XÓA FILE MỚI ĐÃ UPLOAD (tránh file thừa)
          const newPath = path.join("public/images/", newFilename);
@@ -99,26 +99,26 @@ export const userService = {
             .end(byteArrayBuffer);
       });
 
-      await prisma.users.update({
-         where: { id: req.user.id },
-         data: { avatar: uploadResult.public_id },
+      await prisma.nguoi_dung.update({
+         where: { nguoi_dung_id: req.user.nguoi_dung_id },
+         data: { anh_dai_dien: uploadResult.public_id },
       });
 
       //Đảm bảo 1 user chỉ có 1 avatar => xóa hình cũ
-      if (req.user.avatar) {
+      if (req.user.anh_dai_dien) {
          // Xử lý xóa luôn Local để đảm bảo 1 user chỉ có 1 hình avatar
-         const oldPath = path.join("public/images/", req.user.avatar);
+         const oldPath = path.join("public/images/", req.user.anh_dai_dien);
          if (fs.existsSync(oldPath)) {
             fs.unlinkSync(oldPath);
          }
 
          // Xử lý xóa Cloud
-         cloudinary.uploader.destroy(req.user.avatar);
+         cloudinary.uploader.destroy(req.user.anh_dai_dien);
       }
 
       // console.log(uploadResult);
 
-      return `Tải hình avatar lên cloudinary thành công!`;
+      return `Tải ảnh đại diện lên cloudinary thành công!`;
    },
 
    create: async function (req) {
@@ -213,17 +213,21 @@ export const userService = {
       // Validate ho_ten
       if (ho_ten !== undefined) {
          const hoTen = ho_ten.trim();
-         if (hoTen === "") throw new BadRequestException("Họ tên không được để trống.");
+         if (hoTen === "")
+            throw new BadRequestException("Họ tên không được để trống.");
          // Add ho_ten vào object
          updateData.ho_ten = hoTen;
       }
 
       // Validate tuoi
-      const minAge = 16, maxAge = 90;
+      const minAge = 16,
+         maxAge = 90;
       if (tuoi !== undefined) {
          const age = Number(tuoi);
          if (!Number.isInteger(age) || age < minAge || age > maxAge) {
-            throw new BadRequestException(`Tuổi phải là số nguyên từ ${minAge} đến ${maxAge}`);
+            throw new BadRequestException(
+               `Tuổi phải là số nguyên từ ${minAge} đến ${maxAge}`
+            );
          }
          // Add tuoi vào object
          updateData.tuoi = age;
@@ -232,15 +236,19 @@ export const userService = {
       // Validate anh_dai_dien
       if (anh_dai_dien !== undefined) {
          const anhDaiDien = anh_dai_dien.trim();
-         if (anhDaiDien === "") throw new BadRequestException("Link ảnh đại diện không được để trống");
+         if (anhDaiDien === "")
+            throw new BadRequestException(
+               "Link ảnh đại diện không được để trống"
+            );
          // Add anh_dai_dien vào object
          updateData.anh_dai_dien = anhDaiDien;
       }
 
       if (Object.keys(updateData).length === 0) {
-         throw new BadRequestException("Hãy cung cấp ít nhất một thông tin để cập nhật");
+         throw new BadRequestException(
+            "Hãy cung cấp ít nhất một thông tin để cập nhật"
+         );
       }
-
 
       // Xử lý update thông tin người dùng
       const updateUser = await prisma.nguoi_dung.update({

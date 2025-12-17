@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "0b04fe39-101c-4297-85e5-4f353773f7f9",
+		"_postman_id": "327077e4-04fb-4c10-a793-1e43b057ea6f",
 		"name": "PHOTO-HUB",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "49161250",
-		"_collection_link": "https://quyit84-721603.postman.co/workspace/quyit84's-Workspace~130aaf4f-609a-4a56-88a1-ce3091ebb289/collection/49161250-0b04fe39-101c-4297-85e5-4f353773f7f9?action=share&source=collection_link&creator=49161250"
+		"_exporter_id": "42971797",
+		"_collection_link": "https://www.postman.com/demen84/workspace/quy-node-52/collection/42971797-327077e4-04fb-4c10-a793-1e43b057ea6f?action=share&source=collection_link&creator=42971797"
 	},
 	"item": [
 		{
@@ -59,6 +59,42 @@
 					],
 					"path": [
 						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Đăng Ký Người Dùng Admin",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"hoang@gmail.com\",\r\n    \"mat_khau\": \"Apple@123\",\r\n    \"ho_ten\": \"Huy Hoàng\",\r\n    \"tuoi\": 16\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{domainphoto}}auth/register-admin",
+					"host": [
+						"{{domainphoto}}auth"
+					],
+					"path": [
+						"register-admin"
 					]
 				}
 			},
@@ -226,13 +262,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{domainphoto}}image/get-image-and-nguoi-tao/5",
+					"raw": "{{domainphoto}}image/get-image-and-nguoi-tao/6",
 					"host": [
 						"{{domainphoto}}image"
 					],
 					"path": [
 						"get-image-and-nguoi-tao",
-						"5"
+						"6"
 					]
 				}
 			},
@@ -241,6 +277,16 @@
 		{
 			"name": "Tìm Hình Theo Tên",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -295,12 +341,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{domainphoto}}image/check-save-image/2",
+					"raw": "{{domainphoto}}image/check-saved-image/2",
 					"host": [
 						"{{domainphoto}}image"
 					],
 					"path": [
-						"check-save-image",
+						"check-saved-image",
 						"2"
 					]
 				}
@@ -324,7 +370,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"hinh_id\": 13,\r\n    \"noi_dung\": \"Bình luận mới nè\"\r\n}",
+					"raw": "{\r\n    \"hinh_id\": 14,\r\n    \"noi_dung\": \"Bình luận mới nè\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -360,7 +406,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"ten_hinh\": \"Vịnh Cam Ranh\",\r\n    \"duong_dan\": \"/camranhbay.jpg\",\r\n    \"mo_ta\": \"Biển xanh mây trắng, cát vàng\"\r\n}",
+					"raw": "{\r\n    \"ten_hinh\": \"Cam Dai Bay HCM\",\r\n    \"duong_dan\": \"/camranhbay.jpg\",\r\n    \"mo_ta\": \"Biển xanh mây trắng, cát vàng\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -422,13 +468,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{domainphoto}}image/get-created/15",
+					"raw": "{{domainphoto}}image/get-created/24",
 					"host": [
 						"{{domainphoto}}image"
 					],
 					"path": [
 						"get-created",
-						"15"
+						"24"
 					]
 				}
 			},
@@ -450,13 +496,13 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{domainphoto}}image/get-saved/15",
+					"raw": "{{domainphoto}}image/get-saved/24",
 					"host": [
 						"{{domainphoto}}image"
 					],
 					"path": [
 						"get-saved",
-						"15"
+						"24"
 					]
 				}
 			},
@@ -513,7 +559,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"tuoi\": 16,\r\n    \"ho_ten\": \"Trần Huy Hoàng\",\r\n    \"anh_dai_dien\": \"/huyhoang/apple.jpg\"\r\n}",
+					"raw": "{\r\n    \"ho_ten\": \"Tran Huy Hoang\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -521,12 +567,66 @@
 					}
 				},
 				"url": {
-					"raw": "{{domainphoto}}user/15",
+					"raw": "{{domainphoto}}user/24",
 					"host": [
 						"{{domainphoto}}user"
 					],
 					"path": [
-						"15"
+						"24"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Avatar Local",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{domainphoto}}user/avatar-local",
+					"host": [
+						"{{domainphoto}}user"
+					],
+					"path": [
+						"avatar-local"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Avatar Cloud",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "avatar",
+							"type": "file",
+							"src": "/D:/QuyOS/CDCS_JIVF/Photo/2025/Photo/084303000197.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{domainphoto}}user/avatar-cloud",
+					"host": [
+						"{{domainphoto}}user"
+					],
+					"path": [
+						"avatar-cloud"
 					]
 				}
 			},

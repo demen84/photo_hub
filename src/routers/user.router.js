@@ -7,12 +7,15 @@ import { adminProtect } from "../common/middleware/adminProtect.middleware.js";
 
 const userRouter = express.Router();
 
+// Upload hình ảnh ở Local disk
 userRouter.post(
    "/avatar-local",
    protect,
-   uploadLocalDisk.single("avatar"),
+   uploadLocalDisk.single("avatar"), // cài npm i multer
    userController.avatarLocal
 );
+
+// Upload hình ảnh lên cloud (lưu trữ đám mây)
 userRouter.post(
    "/avatar-cloud",
    protect,
